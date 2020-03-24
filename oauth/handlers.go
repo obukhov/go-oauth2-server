@@ -36,6 +36,7 @@ var decoder = schema.NewDecoder()
 // tokensHandler handles all OAuth 2.0 grant types
 // (POST /v1/oauth/tokens)
 func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var (
 		client       *models.OauthClient
 		tokenRequest TokenRequest
@@ -98,6 +99,7 @@ func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 // introspectHandler handles OAuth 2.0 introspect request
 // (POST /v1/oauth/introspect)
 func (s *Service) introspectHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	// Client auth
 	client, err := s.basicAuthClient(r)
 	if err != nil {
