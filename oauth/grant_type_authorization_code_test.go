@@ -20,6 +20,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodeGrantEmptyNotFound() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type": {"authorization_code"},
 		"code":       {""},
@@ -43,6 +44,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodeGrantBogusNotFound() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type": {"authorization_code"},
 		"code":       {"bogus"},
@@ -81,6 +83,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodeGrantExpired() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":   {"authorization_code"},
 		"code":         {"test_code"},
@@ -120,6 +123,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodeGrantInvalidRedirectURI() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":   {"authorization_code"},
 		"code":         {"test_code"},
@@ -159,6 +163,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodeGrant() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":   {"authorization_code"},
 		"code":         {"test_code"},
@@ -212,6 +217,7 @@ func (suite *OauthTestSuite) TestAuthorizationCodePKCEGrant() {
 	// Prepare a request
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"authorization_code"},
 		"code":          {"test_code"},

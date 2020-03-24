@@ -1,21 +1,19 @@
 package oauth
 
 import (
-	"net/http"
-
 	"github.com/RichardKnop/go-oauth2-server/models"
 	"github.com/RichardKnop/go-oauth2-server/oauth/tokentypes"
 )
 
-func (s *Service) refreshTokenGrant(r *http.Request, client *models.OauthClient) (*AccessTokenResponse, error) {
+func (s *Service) refreshTokenGrant(tokenRequest *TokenRequest, client *models.OauthClient) (*AccessTokenResponse, error) {
 	// Fetch the refresh token
-	theRefreshToken, err := s.GetValidRefreshToken(r.Form.Get("refresh_token"), client)
+	theRefreshToken, err := s.GetValidRefreshToken(tokenRequest.RefreshToken, client)
 	if err != nil {
 		return nil, err
 	}
 
 	// Get the scope
-	scope, err := s.getRefreshTokenScope(theRefreshToken, r.Form.Get("scope"))
+	scope, err := s.getRefreshTokenScope(theRefreshToken, tokenRequest.Scope)
 	if err != nil {
 		return nil, err
 	}

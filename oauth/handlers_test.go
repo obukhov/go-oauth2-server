@@ -15,6 +15,7 @@ func (suite *OauthTestSuite) TestTokensHandlerClientAuthenticationRequired() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.PostForm = url.Values{"grant_type": {"client_credentials"}}
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// Serve the request
 	w := httptest.NewRecorder()
@@ -34,6 +35,7 @@ func (suite *OauthTestSuite) TestTokensHandlerInvalidGrantType() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{"grant_type": {"bogus"}}
 
 	// Serve the request
@@ -53,6 +55,7 @@ func (suite *OauthTestSuite) TestIntrospectHandlerClientAuthenticationRequired()
 	// Prepare a request
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/introspect", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{"token": {"token"}}
 
 	// Serve the request

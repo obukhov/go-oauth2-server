@@ -13,6 +13,8 @@ func (suite *OauthTestSuite) TestTokensRouteIsValid() {
 		"http://1.2.3.4/v1/oauth/tokens",
 		nil,
 	)
+
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	assert.NoError(suite.T(), err, "New request should not cause an error")
 
 	// Check the routing
@@ -29,6 +31,8 @@ func (suite *OauthTestSuite) TestIntrospectRouteIsValid() {
 		"http://1.2.3.4/v1/oauth/introspect",
 		nil,
 	)
+
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	assert.NoError(suite.T(), err, "New request should not cause an error")
 
 	// Check the routing

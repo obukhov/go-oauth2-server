@@ -22,35 +22,41 @@ var (
 	ErrTokenHintInvalid = errors.New("Invalid token hint")
 )
 
+// IntrospectionRequest ...
+type IntrospectionRequest struct {
+	Token         string `schema:"token" json:"token"`
+	TokenTypeHint string `schema:"token_type_hint" json:"token_type_hint"`
+}
+
 func (s *Service) introspectToken(r *http.Request, client *models.OauthClient) (*IntrospectResponse, error) {
-	// Parse the form so r.Form becomes available
-	if err := r.ParseForm(); err != nil {
+	var (
+		introspectionRequest IntrospectionRequest
+		err                  error
+	)
+
+	err = s.DecodeRequest(r, &introspectionRequest)
+	if err != nil {
 		return nil, err
 	}
 
-	// Get token from the query
-	token := r.Form.Get("token")
-	if token == "" {
+	if introspectionRequest.Token == "" {
 		return nil, ErrTokenMissing
 	}
 
-	// Get token type hint from the query
-	tokenTypeHint := r.Form.Get("token_type_hint")
-
 	// Default to access token hint
-	if tokenTypeHint == "" {
-		tokenTypeHint = AccessTokenHint
+	if introspectionRequest.TokenTypeHint == "" {
+		introspectionRequest.TokenTypeHint = AccessTokenHint
 	}
 
-	switch tokenTypeHint {
+	switch introspectionRequest.TokenTypeHint {
 	case AccessTokenHint:
-		accessToken, err := s.Authenticate(token)
+		accessToken, err := s.Authenticate(introspectionRequest.Token)
 		if err != nil {
 			return nil, err
 		}
 		return s.NewIntrospectResponseFromAccessToken(accessToken)
 	case RefreshTokenHint:
-		refreshToken, err := s.GetValidRefreshToken(token, client)
+		refreshToken, err := s.GetValidRefreshToken(introspectionRequest.Token, client)
 		if err != nil {
 			return nil, err
 		}

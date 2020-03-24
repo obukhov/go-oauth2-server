@@ -19,6 +19,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantEmptyNotFound() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {""},
@@ -42,6 +43,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantBogusNotFound() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {"bogus_token"},
@@ -79,6 +81,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantExipired() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {"test_token"},
@@ -117,6 +120,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantScopeCannotBeGreater() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {"test_token"},
@@ -155,6 +159,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantDefaultsToOriginalScope() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {"test_token"},
@@ -200,6 +205,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrant() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {"test_token"},

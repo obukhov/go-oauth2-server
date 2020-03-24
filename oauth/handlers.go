@@ -2,6 +2,7 @@ package oauth
 
 import (
 	"errors"
+	"github.com/gorilla/schema"
 	"net/http"
 
 	"github.com/RichardKnop/go-oauth2-server/models"
@@ -15,17 +16,40 @@ var (
 	ErrInvalidClientIDOrSecret = errors.New("Invalid client ID or secret")
 )
 
+// TokenRequest ...
+type TokenRequest struct {
+	GrantType           string `schema:"grant_type" json:"grant_type"`
+	CodeVerifier        string `schema:"code_verifier" json:"code_verifier"`
+	CodeChallengeMethod string `schema:"code_challenge_method" json:"code_challenge_method"`
+	ClientID            string `schema:"client_id" json:"client_id"`
+	ClientSecret        string `schema:"client_secret" json:"client_secret"`
+	RefreshToken        string `schema:"refresh_token" json:"refresh_token"`
+	Scope               string `schema:"scope" json:"scope"`
+	Username            string `schema:"username" json:"username"`
+	Password            string `schema:"password" json:"password"`
+	Code                string `schema:"code" json:"code"`
+	RedirectURI         string `schema:"redirect_uri" json:"redirect_uri"`
+}
+
+var decoder = schema.NewDecoder()
+
 // tokensHandler handles all OAuth 2.0 grant types
 // (POST /v1/oauth/tokens)
 func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse the form so r.Form becomes available
-	if err := r.ParseForm(); err != nil {
+	var (
+		client       *models.OauthClient
+		tokenRequest TokenRequest
+		err          error
+	)
+
+	err = s.DecodeRequest(r, &tokenRequest)
+	if err != nil {
 		response.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// Map of grant types against handler functions
-	grantTypes := map[string]func(r *http.Request, client *models.OauthClient) (*AccessTokenResponse, error){
+	grantTypes := map[string]func(tokenRequest *TokenRequest, client *models.OauthClient) (*AccessTokenResponse, error){
 		"authorization_code": s.authorizationCodeGrant,
 		"password":           s.passwordGrant,
 		"client_credentials": s.clientCredentialsGrant,
@@ -33,19 +57,14 @@ func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check the grant type
-	grantHandler, ok := grantTypes[r.Form.Get("grant_type")]
+	grantHandler, ok := grantTypes[tokenRequest.GrantType]
 	if !ok {
 		response.Error(w, ErrInvalidGrantType.Error(), http.StatusBadRequest)
 		return
 	}
 
-	var (
-		client *models.OauthClient
-		err    error
-	)
-
 	// If PKCE Request, skip basic auth
-	if !(r.Form.Get("grant_type") == "authorization_code" && len(r.Form.Get("code_verifier")) > 0) {
+	if !(tokenRequest.GrantType == "authorization_code" && len(tokenRequest.CodeVerifier) > 0) {
 		// Client auth
 		client, err = s.basicAuthClient(r)
 		if err != nil {
@@ -53,7 +72,7 @@ func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		client, err = s.FindClientByClientID(r.Form.Get("client_id"))
+		client, err = s.FindClientByClientID(tokenRequest.ClientID)
 		if err != nil {
 			response.UnauthorizedError(w, err.Error())
 			return
@@ -66,7 +85,7 @@ func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Grant processing
-	resp, err := grantHandler(r, client)
+	resp, err := grantHandler(&tokenRequest, client)
 	if err != nil {
 		response.Error(w, err.Error(), getErrStatusCode(err))
 		return

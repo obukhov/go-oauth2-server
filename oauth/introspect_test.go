@@ -100,6 +100,7 @@ func (suite *OauthTestSuite) TestHandleIntrospectMissingToken() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/introspect", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{}
 
 	// And serve the request
@@ -121,6 +122,7 @@ func (suite *OauthTestSuite) TestHandleIntrospectInvailidTokenHint() {
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
 	r.PostForm = url.Values{"token": {"token"}, "token_type_hint": {"wrong"}}
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// And serve the request
 	w := httptest.NewRecorder()
@@ -155,6 +157,7 @@ func (suite *OauthTestSuite) TestHandleIntrospectAccessToken() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/introspect", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// With correct token hint
 	r.PostForm = url.Values{
@@ -224,6 +227,7 @@ func (suite *OauthTestSuite) TestHandleIntrospectRefreshToken() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/introspect", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// With correct token hint
 	r.PostForm = url.Values{
@@ -281,6 +285,7 @@ func (suite *OauthTestSuite) TestHandleIntrospectInactiveToken() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/introspect", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// With access token hint
 	r.PostForm = url.Values{

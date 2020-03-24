@@ -18,6 +18,7 @@ func (suite *OauthTestSuite) TestPasswordGrant() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type": {"password"},
 		"username":   {"test@user"},
@@ -55,6 +56,7 @@ func (suite *OauthTestSuite) TestPasswordGrantWithRoleRestriction() {
 	r, err := http.NewRequest("POST", "http://1.2.3.4/v1/oauth/tokens", nil)
 	assert.NoError(suite.T(), err, "Request setup should not get an error")
 	r.SetBasicAuth("test_client_1", "test_secret")
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	r.PostForm = url.Values{
 		"grant_type": {"password"},
 		"username":   {"test@user"},
