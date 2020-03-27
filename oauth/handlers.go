@@ -38,7 +38,6 @@ var decoder = schema.NewDecoder()
 func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var (
-		client       *models.OauthClient
 		tokenRequest TokenRequest
 		err          error
 	)
@@ -64,22 +63,45 @@ func (s *Service) tokensHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If PKCE Request, skip basic auth
-	if !(tokenRequest.GrantType == "authorization_code" && len(tokenRequest.CodeVerifier) > 0) {
-		// Client auth
-		client, err = s.basicAuthClient(r)
-		if err != nil {
-			response.UnauthorizedError(w, err.Error())
-			return
-		}
-	} else {
-		client, err = s.FindClientByClientID(tokenRequest.ClientID)
+	var (
+		client      *models.OauthClient
+		authCodeReq bool
+		refreshReq  bool
+	)
+
+	authCodeReq = tokenRequest.GrantType == "authorization_code"
+	refreshReq = tokenRequest.GrantType == "refresh_token"
+
+	//If it's an authorization_code or refresh_token request, and a client_id is specified, look it up
+	if (authCodeReq || refreshReq) && len(tokenRequest.ClientID) > 0 {
+		//Grab the client
+		var _client *models.OauthClient
+		_client, err = s.FindClientByClientID(tokenRequest.ClientID)
 		if err != nil {
 			response.UnauthorizedError(w, err.Error())
 			return
 		}
 
-		if !client.Public {
+		//If the client is public, allow for auth code and refresh
+		if _client.Public && authCodeReq && len(tokenRequest.CodeVerifier) > 0 {
+			client = _client
+		} else if _client.Public && refreshReq {
+			client = _client
+		} else {
+			response.UnauthorizedError(w, ErrInvalidGrantType.Error())
+			return
+		}
+	}
+
+	if client == nil {
+		client, err = s.basicAuthClient(r)
+		if err != nil {
+			response.UnauthorizedError(w, err.Error())
+			return
+		}
+
+		// If we got here with a public client, it's not a valid PKCE request
+		if client.Public {
 			response.UnauthorizedError(w, ErrPKCENotAllowed.Error())
 			return
 		}

@@ -24,7 +24,7 @@ var (
 
 // IntrospectionRequest ...
 type IntrospectionRequest struct {
-	ClientID	  string `schema:"client_id" json:"client_id"`
+	ClientID      string `schema:"client_id" json:"client_id"`
 	ClientSecret  string `schema:"client_secret" json:"client_secret"`
 	Token         string `schema:"token" json:"token"`
 	TokenTypeHint string `schema:"token_type_hint" json:"token_type_hint"`
