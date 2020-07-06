@@ -11,7 +11,7 @@ exec etcdctl put /config/go_oauth2_server.json '{
     "Host": "postgres",
     "Port": 5432,
     "User": "go_oauth2_server",
-    "Password": "",
+    "Password": "go_oauth2_server",
     "SSLMode": "allow",
     "DatabaseName": "go_oauth2_server",
     "MaxIdleConns": 5,

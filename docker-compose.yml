@@ -30,7 +30,7 @@ services:
     environment:
       PGDATA: "/var/lib/postgresql/data/pgdata"
       POSTGRES_USER: "go_oauth2_server"
-      POSTGRES_PASSWORD: ""
+      POSTGRES_PASSWORD: "go_oauth2_server"
       POSTGRES_DB: "go_oauth2_server"
 
   app:

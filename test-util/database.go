@@ -38,10 +38,10 @@ func CreateTestDatabase(dbPath string, migrationFunctions []func(*gorm.DB) error
 // CreateTestDatabasePostgres is similar to CreateTestDatabase but it uses
 // Postgres instead of sqlite, this is needed for testing packages that rely
 // on some Postgres specifuc features (such as table inheritance)
-func CreateTestDatabasePostgres(dbHost, dbUser, dbName string, migrationFunctions []func(*gorm.DB) error, fixtureFiles []string) (*gorm.DB, error) {
+func CreateTestDatabasePostgres(dbHost, dbUser, dbPass, dbName string, migrationFunctions []func(*gorm.DB) error, fixtureFiles []string) (*gorm.DB, error) {
 
 	// Postgres test database
-	db, err := rebuildDatabasePostgres(dbHost, dbUser, dbName)
+	db, err := rebuildDatabasePostgres(dbHost, dbUser, dbPass, dbName)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func rebuildDatabase(dbPath string) (*gorm.DB, error) {
 
 // rebuildDatabase attempts to delete an existing Postgres
 // database and rebuild it, returning a pointer to it
-func rebuildDatabasePostgres(dbHost, dbUser, dbName string) (*gorm.DB, error) {
-	db, err := openPostgresDB(dbHost, dbUser, "template1")
+func rebuildDatabasePostgres(dbHost, dbUser, dbPass, dbName string) (*gorm.DB, error) {
+	db, err := openPostgresDB(dbHost, dbUser, dbPass, "template1")
 	if err != nil {
 		return nil, err
 	}
@@ -87,16 +87,17 @@ func rebuildDatabasePostgres(dbHost, dbUser, dbName string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	return openPostgresDB(dbHost, dbUser, dbName)
+	return openPostgresDB(dbHost, dbUser, dbPass, dbName)
 }
 
-func openPostgresDB(dbHost, dbUser, dbName string) (*gorm.DB, error) {
+func openPostgresDB(dbHost, dbUser, dbPass, dbName string) (*gorm.DB, error) {
 	// Init a new postgres test database connection
 	db, err := gorm.Open("postgres",
 		fmt.Sprintf(
-			"sslmode=disable host=%s port=5432 user=%s password='' dbname=%s",
+			"sslmode=disable host=%s port=5432 user=%s password=%s dbname=%s",
 			dbHost,
 			dbUser,
+			dbPass,
 			dbName,
 		),
 	)

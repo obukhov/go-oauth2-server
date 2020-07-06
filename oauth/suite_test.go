@@ -16,6 +16,7 @@ import (
 
 var (
 	testDbUser = "go_oauth2_server"
+	testDbPass = "go_oauth2_server"
 	testDbName = "go_oauth2_server_oauth_test"
 
 	testFixtures = []string{
@@ -57,6 +58,7 @@ func (suite *OauthTestSuite) SetupSuite() {
 	db, err := testutil.CreateTestDatabasePostgres(
 		suite.cnf.Database.Host,
 		testDbUser,
+		testDbPass,
 		testDbName,
 		testMigrations,
 		testFixtures,

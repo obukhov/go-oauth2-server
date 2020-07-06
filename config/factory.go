@@ -22,7 +22,7 @@ var Cnf = &Config{
 		Host:         "postgres",
 		Port:         5432,
 		User:         "go_oauth2_server",
-		Password:     "",
+		Password:     "go_oauth2_server",
 		DatabaseName: "go_oauth2_server",
 		MaxIdleConns: 5,
 		MaxOpenConns: 5,

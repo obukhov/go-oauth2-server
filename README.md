@@ -536,7 +536,7 @@ ETCDCTL_API=3 etcdctl put /config/go_oauth2_server.json '{
     "Host": "localhost",
     "Port": 5432,
     "User": "go_oauth2_server",
-    "Password": "",
+    "Password": "go_oauth2_server",
     "DatabaseName": "go_oauth2_server",
     "MaxIdleConns": 5,
     "MaxOpenConns": 5
@@ -579,7 +579,7 @@ consul kv put /config/go_oauth2_server.json '{
     "Host": "localhost",
     "Port": 5432,
     "User": "go_oauth2_server",
-    "Password": "",
+    "Password": "go_oauth2_server",
     "DatabaseName": "go_oauth2_server",
     "MaxIdleConns": 5,
     "MaxOpenConns": 5
