@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/RichardKnop/go-oauth2-server/log"
 	"time"
 
 	"github.com/RichardKnop/go-oauth2-server/config"
@@ -27,6 +28,15 @@ func NewDatabase(cnf *config.Config) (*gorm.DB, error) {
 		if cnf.Database.SSLMode == "" {
 			cnf.Database.SSLMode = "allow"
 		}
+
+		log.INFO.Printf("Connecting to PSQL: sslmode=%s host=%s port=%d user=%s password='---' dbname=%s",
+			cnf.Database.SSLMode,
+			cnf.Database.Host,
+			cnf.Database.Port,
+			cnf.Database.User,
+			cnf.Database.DatabaseName,
+		)
+
 		args := fmt.Sprintf(
 			"sslmode=%s host=%s port=%d user=%s password='%s' dbname=%s",
 			cnf.Database.SSLMode,
