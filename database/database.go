@@ -24,8 +24,12 @@ func NewDatabase(cnf *config.Config) (*gorm.DB, error) {
 	if cnf.Database.Type == "postgres" {
 		// Connection args
 		// see https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters
+		if cnf.Database.SSLMode == "" {
+			cnf.Database.SSLMode = "allow"
+		}
 		args := fmt.Sprintf(
-			"sslmode=disable host=%s port=%d user=%s password='%s' dbname=%s",
+			"sslmode=%s host=%s port=%d user=%s password='%s' dbname=%s",
+			cnf.Database.SSLMode,
 			cnf.Database.Host,
 			cnf.Database.Port,
 			cnf.Database.User,

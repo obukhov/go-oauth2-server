@@ -8,6 +8,7 @@ type DatabaseConfig struct {
 	User         string
 	Password     string
 	DatabaseName string
+	SSLMode      string
 	MaxIdleConns int
 	MaxOpenConns int
 }

@@ -12,6 +12,7 @@ exec etcdctl put /config/go_oauth2_server.json '{
     "Port": 5432,
     "User": "go_oauth2_server",
     "Password": "",
+    "SSLMode": "allow",
     "DatabaseName": "go_oauth2_server",
     "MaxIdleConns": 5,
     "MaxOpenConns": 5
