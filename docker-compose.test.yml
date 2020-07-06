@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: "go_oauth2_server"
       POSTGRES_PASSWORD: "go_oauth2_server"
       POSTGRES_DB: "go_oauth2_server"
-#    logging:
-#      driver: none
+    logging:
+      driver: none
 
   sut:
     container_name: go_oauth2_server_sut
