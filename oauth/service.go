@@ -6,12 +6,14 @@ import (
 	"github.com/RichardKnop/go-oauth2-server/config"
 	"github.com/RichardKnop/go-oauth2-server/oauth/roles"
 	"github.com/jinzhu/gorm"
+	"mime"
 	"net/http"
 )
 
 var (
 	// ErrMissingContentType ...
 	ErrMissingContentType = errors.New("Missing content type")
+	ErrUnknownContentType = errors.New("Unknown content type")
 )
 
 // Service struct keeps objects to avoid passing them around
@@ -62,6 +64,13 @@ func (s *Service) DecodeRequest(r *http.Request, target interface{}) error {
 
 	if len(contentType) <= 0 {
 		return ErrMissingContentType
+	}
+
+	mediaType, _, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		return ErrUnknownContentType
+	}else {
+		contentType = mediaType
 	}
 
 	if contentType == "application/json" {
